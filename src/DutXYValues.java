@@ -128,10 +128,10 @@ public class DutXYValues{
 			}
 			
 			//testing...
-			validateDuts(dutList, path);
+			//validateDuts(dutList, path);
 			
 			processResult1(dutList, path);
-			//processResult2(dutList, path);
+			processResult2(dutList, path);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,7 +145,7 @@ public class DutXYValues{
 			}
 		}
     }
-
+    
     /**
      * sort the duts and output the duts x/y/value to the file
      */
@@ -170,15 +170,17 @@ public class DutXYValues{
     	sb.append("\n");
     	//----------------------------------
     	
-    	int y = dutList.get(0).y; int x = 0;
+    	int y = dutList.get(0).y - 1; int x = 0;
     	
     	for(Dut dut : dutList){
     		
-    		if(y < dut.y){
-    			sb.append("\n").append(y);
+    		//fill the rows as placeholder if needed
+    		while(y < dut.y){
+    			sb.append("\n").append(++y);
     			x = 0;
-    			y++;
-    		}else if(y == dut.y){
+    		}
+    		
+    		if(y == dut.y){
     			//print the row from 0 to max of x
     			while(x < dut.x){
     				sb.append("\t");
@@ -191,37 +193,19 @@ public class DutXYValues{
         			x++;
     			}else{
     				System.out.println("Error - this should not happen: x > dut.x | " + x + "-" + y + "-" + dut);
+    				System.exit(1);
     			}
     			
      		}else{
      			System.out.println("Error - this should not happen: y > dut.y");
+     			System.exit(1);
      		}    		
     	}
     	
-    	//store the result to the output file
-    	BufferedWriter output = null;
-		try {
-			String result = originFilename + ".result2";
-			
-			File newFile = new File(result);
-			newFile.createNewFile();
-			output = new BufferedWriter(new FileWriter(newFile));
-			output.write(sb.toString());
-
-			output.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(output != null){
-				try {
-					output.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+    	writeToFile(sb.toString(), originFilename + ".result2");
     }
-	
+
+    
     /**
      * sort the duts and output the duts x/y/value to the file
      */
@@ -278,28 +262,7 @@ public class DutXYValues{
      		}    		
     	}
     	
-    	//store the result to the output file
-    	BufferedWriter output = null;
-		try {
-			String result = originFilename + ".result1";
-			
-			File newFile = new File(result);
-			newFile.createNewFile();
-			output = new BufferedWriter(new FileWriter(newFile));
-			output.write(sb.toString());
-
-			output.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(output != null){
-				try {
-					output.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+    	writeToFile(sb.toString(), originFilename + ".result1");
     }
 
 	
@@ -383,6 +346,31 @@ public class DutXYValues{
 				}
 			}
 		}
+	}
+	
+	private static void writeToFile(String content, String filename){
+
+    	//store the result to the output file
+    	BufferedWriter output = null;
+		try {		
+			File newFile = new File(filename);
+			newFile.createNewFile();
+			output = new BufferedWriter(new FileWriter(newFile));
+			output.write(content);
+
+			output.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(output != null){
+				try {
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 }
 

@@ -52,7 +52,7 @@ public class DutXYValues{
 	    }
 	}
 	
-	private static List<Dut> dutList = new LinkedList<Dut>();
+	//private static List<Dut> dutList = new LinkedList<Dut>();
 	
 	public static void main(String[] args) {
 		
@@ -108,16 +108,18 @@ public class DutXYValues{
 			StringBuilder sb = new StringBuilder();
 			String line = "";
 			
+			List<Dut> dutList = new LinkedList<Dut>();
+
 			while (true) {
 				
 				line = br.readLine();
 				
 				if(line == null){
-					parseUnit(sb.toString());
+					parseUnit(dutList, sb.toString());
 					break;
 				}else{
 					if(line.contains("Program:")){ //new unit
-						parseUnit(sb.toString());
+						parseUnit(dutList, sb.toString());
 						sb.setLength(0); //clean the string builder
 					}
 					sb.append(line);
@@ -126,10 +128,10 @@ public class DutXYValues{
 			}
 			
 			//testing...
-			validateDuts(path);
+			validateDuts(dutList, path);
 			
-			processResult1(path);
-			//processResult2(path);
+			processResult1(dutList, path);
+			//processResult2(dutList, path);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,7 +149,7 @@ public class DutXYValues{
     /**
      * sort the duts and output the duts x/y/value to the file
      */
-    private static void processResult2(String originFilename){
+    private static void processResult2(List<Dut> dutList, String originFilename){
     	
     	Collections.sort(dutList);
     	
@@ -223,7 +225,7 @@ public class DutXYValues{
     /**
      * sort the duts and output the duts x/y/value to the file
      */
-    private static void processResult1(String originFilename){
+    private static void processResult1(List<Dut> dutList, String originFilename){
     	
     	Collections.sort(dutList);
     	
@@ -301,7 +303,7 @@ public class DutXYValues{
     }
 
 	
-	private static void parseUnit(String str){
+	private static void parseUnit(List<Dut> dutList, String str){
 		
 		Map<Integer, Dut> unitDuts = new HashMap<Integer, Dut>();
 		
@@ -348,7 +350,7 @@ public class DutXYValues{
         }
 	}
 
-	private static void validateDuts(String validateResult){
+	private static void validateDuts(List<Dut> dutList, String validateResult){
    	
     	Collections.sort(dutList);
 
